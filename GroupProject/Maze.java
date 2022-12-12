@@ -78,7 +78,7 @@ class Point {
         this.x = x;
         this.y = y;
         this.stage = "unvisited";
-        this.directions = new String[]{"UP", "DOWN", "RIGHT", "LEFT"};
+        this.directions = new String[]{"UP", "RIGHT", "LEFT", "DOWN"};
     }
 
     static Point getNextPoint(int curX, int curY, int x, int y) {
@@ -87,25 +87,21 @@ class Point {
 
      Point goUp() {
         Point p = getNextPoint(this.x, this.y, -1, 0);
-
         return p;
     }
 
     Point goDown() {
         Point p = getNextPoint(this.x, this.y, 1, 0);
-
         return p;
     }
 
     Point goRight() {
         Point p = getNextPoint(this.x, this.y, 0, 1);
-
         return p;
     }
 
     Point goLeft() {
         Point p = getNextPoint(this.x, this.y, 0, -1);
-
         return p;
     }
 
@@ -172,14 +168,6 @@ class PointCollection {
 
     Point peek() {
         return points[size - 1];
-    }
-
-    void setPointStage (int x, int y, String stage) {
-        for (int i = 0; i < size; i++) {
-            if (points[i].getX() == x && points[i].getY() == y) {
-                points[i].setStage(stage);
-            }
-        }
     }
 }
 
