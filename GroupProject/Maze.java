@@ -233,6 +233,7 @@ class Robot {
                     if (testMove(maze, newPoint, path)) {
                         return true;
                     }
+                    maze.go(moveBack[i]);
                 }
                 if (moveForward[i].equals("DOWN")) {
                     p.directions[i] = "visited";
@@ -241,6 +242,7 @@ class Robot {
                     if (testMove(maze, newPoint, path)) {
                         return true;
                     }
+                    maze.go(moveBack[i]);
                 }
                 if (moveForward[i].equals("RIGHT")) {
                     p.directions[i] = "visited";
@@ -249,6 +251,7 @@ class Robot {
                     if (testMove(maze, newPoint, path)) {
                         return true;
                     }
+                    maze.go(moveBack[i]);
                 }
                 if (moveForward[i].equals("LEFT")) {
                     p.directions[i] = "visited";
@@ -257,6 +260,7 @@ class Robot {
                     if (testMove(maze, newPoint, path)) {
                         return true;
                     }
+                    maze.go(moveBack[i]);
                 }
             }
             if (res.equals("false")) {
