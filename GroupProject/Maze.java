@@ -14,8 +14,8 @@ public class Maze {
         rows = 4;
         cols = 5;
         map = new String[rows];
-        map[0] = ".....";
-        map[1] = "X   .";
+        map[0] = ".X...";
+        map[1] = ".   .";
         map[2] = ".   .";
         map[3] = ".....";
         robotRow = 2;
@@ -85,7 +85,7 @@ class Point {
         return new Point(curX + x, curY + y);
     }
 
-    Point goUp() {
+     Point goUp() {
         Point p = getNextPoint(this.x, this.y, -1, 0);
 
         return p;
