@@ -16,8 +16,8 @@ public class Maze {
         rows = 4;
         cols = 5;
         map = new String[rows];
-        map[0] = ".....";
-        map[1] = ".   X";
+        map[0] = "...X.";
+        map[1] = ".   .";
         map[2] = ".   .";
         map[3] = ".....";
         robotRow = 2;
@@ -55,7 +55,7 @@ public class Maze {
             return "win";
         } else if (map[currentRow].charAt(currentCol) == '.') {
             // Wall
-//            System.out.println("Current: " + robotRow + ", " + robotCol);
+            System.out.println("Current: " + robotRow + ", " + robotCol);
             steps++;
             return "false";
         } else {
@@ -63,7 +63,7 @@ public class Maze {
             steps++;
             robotRow = currentRow;
             robotCol = currentCol;
-//            System.out.println("Current: " + robotRow + ", " + robotCol);
+            System.out.println("Current: " + robotRow + ", " + robotCol);
             return "true";
         }
     }
@@ -86,6 +86,7 @@ class Robot {
         Point start = new Point(0, 0);
 //        start.setPosDir(2, false);
         PointCollection visited = new PointCollection();
+//        visited.push(start);
         PointCollection wall = new PointCollection();
         System.out.println("Current: " + maze.robotRow + ", " + maze.robotCol);
         if (explore(maze, start, visited, wall)) {
@@ -96,11 +97,10 @@ class Robot {
     }
 
     boolean explore(Maze maze, Point p, PointCollection visited, PointCollection wall) {
-//        System.out.println(p);
-        if (p.isExplored(maze, visited, wall)) {
+
+        if (p.isExplored(maze, visited, wall) || visited.isExisting(p.getX(), p.getY()) || wall.isExisting(p.getX(), p.getY())) {
             System.out.println("GO BACK");
             // Not finished
-//            return false;
 //            p.setStage("visited");
 //            visited.push(p);
 //            int currentDir = p.getIntDirection();
@@ -110,7 +110,7 @@ class Robot {
 //            }
 //            boolean[] prevPosDir = prev.getPosDir();
 //            prev.setPosDir(currentDir, false);
-//            System.out.println(p.getDirectionTo(prev));
+////            System.out.println(p.getDirectionTo(prev));
 //            maze.go(p.getDirectionTo(prev));
 //            for (int i = 0; i < prevPosDir.length; i++) {
 //                if (prevPosDir[i]) {
@@ -118,18 +118,22 @@ class Robot {
 //                    break;
 //                }
 //            }
-////            System.out.println("Current " + p);
-////            System.out.println("Prev " + prev);
+//            System.out.println("Current " + p);
+//            System.out.println("Prev " + prev);
 //            return explore(maze, prev, visited, wall);
+            return false;
         }
 
+//        System.out.println(p);
+
         int currentDir = p.getIntDirection();
+        System.out.println(currentDir);
         int x = p.getX();
         int y = p.getY();
         boolean[] posDirections = p.getPosDir();
 
         String feedback = maze.go(p.getStrDirection());
-//        System.out.println("Response:" + feedback);
+        System.out.println("Response:" + feedback);
         if (feedback.equals("win")) {
             return true;
         }
@@ -156,108 +160,130 @@ class Robot {
                 wall.push(wallPoint);
             }
             p.setPosDir(currentDir, false);
-            for (int i = 0; i < posDirections.length; i++) {
+            boolean[] nextDirections = p.getPosDir();
+            for (int i = 0; i < nextDirections.length; i++) {
                 if (posDirections[i]) {
                     p.setDirection(i);
                     break;
                 }
             }
+            if (p.getIntDirection() == 3) {
+                Point right = new Point(x, y + 1);
+                right.setDirection(3);
+//                p.setPosDir(3, false);
+                Point prev = p.getPrev();
+                int prevDir = prev.currentDir;
+                if (prevDir == 0) {
+                    right.setPosDir(2, false);
+                }
+                if (prevDir == 1) {
+                    right.setPosDir(3, false);
+                }
+                if (prevDir == 2) {
+                    right.setPosDir(0, false);
+                }
+                if (prevDir == 3) {
+                    right.setPosDir(1, false);
+                }
+                right.setPrev(p);
+                return explore(maze, right, visited, wall);
+            }
+//            System.out.println("False:" + p);
             return explore(maze, p, visited, wall);
         }
 
         if (feedback.equals("true")) {
             p.setStage("visited");
             visited.push(p);
-        }
-
-        if (!visited.isExisting(x - 1, y) && !wall.isExisting(x - 1, y) && posDirections[0]) {
-            // Go up
-            Point up = new Point(x - 1, y);
-            up.setDirection(0);
-            p.setPosDir(currentDir, false);
-            up.setPrev(p);
-            if (currentDir == 0) {
-                up.setPosDir(2, false);
-            }
-            if (currentDir == 1) {
-                up.setPosDir(3, false);
-            }
-            if (currentDir == 2) {
-                up.setPosDir(0, false);
-            }
-            if (currentDir == 3) {
-                up.setPosDir(1, false);
-            }
+            if (!visited.isExisting(x - 1, y) && !wall.isExisting(x - 1, y) && posDirections[0]) {
+                // Go up
+                Point up = new Point(x - 1, y);
+                up.setDirection(0);
+                p.setPosDir(currentDir, false);
+                up.setPrev(p);
+                if (currentDir == 0) {
+                    up.setPosDir(2, false);
+                }
+                if (currentDir == 1) {
+                    up.setPosDir(3, false);
+                }
+                if (currentDir == 2) {
+                    up.setPosDir(0, false);
+                }
+                if (currentDir == 3) {
+                    up.setPosDir(1, false);
+                }
 //            System.out.println(p);
 //            System.out.println(up);
-            if (explore(maze, up, visited, wall)) {
-                return true;
+                if (explore(maze, up, visited, wall)) {
+                    return true;
+                }
             }
-        }
-        if (!visited.isExisting(x, y - 1) && !wall.isExisting(x, y - 1) && posDirections[1]) {
-            // Go left
-            Point left = new Point(x, y - 1);
-            left.setDirection(1);
-            p.setPosDir(1, false);
-            left.setPrev(p);
-            if (currentDir == 0) {
-                left.setPosDir(2, false);
+            if (!visited.isExisting(x, y - 1) && !wall.isExisting(x, y - 1) && posDirections[1]) {
+                // Go left
+                Point left = new Point(x, y - 1);
+                left.setDirection(1);
+                p.setPosDir(1, false);
+                left.setPrev(p);
+                if (currentDir == 0) {
+                    left.setPosDir(2, false);
+                }
+                if (currentDir == 1) {
+                    left.setPosDir(3, false);
+                }
+                if (currentDir == 2) {
+                    left.setPosDir(0, false);
+                }
+                if (currentDir == 3) {
+                    left.setPosDir(1, false);
+                }
+                if (explore(maze, left, visited, wall)) {
+                    return true;
+                }
             }
-            if (currentDir == 1) {
-                left.setPosDir(3, false);
+            if (!visited.isExisting(x + 1, y) && !wall.isExisting(x + 1, y) && posDirections[2]) {
+                // Go down
+                Point down = new Point(x + 1, y);
+                down.setDirection(2);
+                p.setPosDir(2, false);
+                down.setPrev(p);
+                if (currentDir == 0) {
+                    down.setPosDir(2, false);
+                }
+                if (currentDir == 1) {
+                    down.setPosDir(3, false);
+                }
+                if (currentDir == 2) {
+                    down.setPosDir(0, false);
+                }
+                if (currentDir == 3) {
+                    down.setPosDir(1, false);
+                }
+                if (explore(maze, down, visited, wall)) {
+                    return true;
+                }
             }
-            if (currentDir == 2) {
-                left.setPosDir(0, false);
-            }
-            if (currentDir == 3) {
-                left.setPosDir(1, false);
-            }
-            if (explore(maze, left, visited, wall)) {
-                return true;
-            }
-        }
-        if (!visited.isExisting(x + 1, y) && !wall.isExisting(x + 1, y) && posDirections[2]) {
-            // Go down
-            Point down = new Point(x + 1, y);
-            down.setDirection(2);
-            p.setPosDir(2, false);
-            down.setPrev(p);
-            if (currentDir == 0) {
-                down.setPosDir(2, false);
-            }
-            if (currentDir == 1) {
-                down.setPosDir(3, false);
-            }
-            if (currentDir == 2) {
-                down.setPosDir(0, false);
-            }
-            if (currentDir == 3) {
-                down.setPosDir(1, false);
-            }
-            if (explore(maze, down, visited, wall)) {
-                return true;
-            }
-        }
-        if (!visited.isExisting(x, y + 1) && !wall.isExisting(x, y + 1) && posDirections[3]) {
-            // Go right
-            Point right = new Point(x, y + 1);
-            right.setDirection(3);
-            p.setPosDir(3, false);
-            right.setPrev(p);
-            if (currentDir == 0) {
-                right.setPosDir(2, false);
-            }
-            if (currentDir == 1) {
-                right.setPosDir(3, false);
-            }
-            if (currentDir == 2) {
-                right.setPosDir(0, false);
-            }
-            if (currentDir == 3) {
-                right.setPosDir(1, false);
-            }
-            if (explore(maze, right, visited, wall)) {
-                return true;
+            if (!visited.isExisting(x, y + 1) && !wall.isExisting(x, y + 1) && posDirections[3]) {
+                // Go right
+                Point right = new Point(x, y + 1);
+                right.setDirection(3);
+                p.setPosDir(3, false);
+                right.setPrev(p);
+                if (currentDir == 0) {
+                    right.setPosDir(2, false);
+                }
+                if (currentDir == 1) {
+                    right.setPosDir(3, false);
+                }
+                if (currentDir == 2) {
+                    right.setPosDir(0, false);
+                }
+                if (currentDir == 3) {
+                    right.setPosDir(1, false);
+                }
+                if (explore(maze, right, visited, wall)) {
+                    return true;
+                }
             }
         }
         return false;
@@ -390,7 +416,6 @@ class Point {
                 ", currentDir=" + currentDir +
                 ", posDir=" + Arrays.toString(posDir) +
                 ", stage='" + stage + '\'' +
-
                 '}';
     }
 }
