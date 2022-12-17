@@ -16,7 +16,7 @@ public class Maze {
         rows = 4;
         cols = 5;
         map = new String[rows];
-        map[0] = "...X.";
+        map[0] = ".X...";
         map[1] = ".   .";
         map[2] = ".   .";
         map[3] = ".....";
@@ -75,10 +75,12 @@ public class Maze {
 
 class Robot {
     String[] directions;
+    ArrayList<String> path;
     // A very simple implementation
     // where the robot just go randomly
     public Robot() {
         directions = new String[]{"UP", "LEFT", "RIGHT", "DOWN"};
+        path = new ArrayList<String>();
     }
 
     public void navigate() {
@@ -91,6 +93,8 @@ class Robot {
         System.out.println("Current: " + maze.robotRow + ", " + maze.robotCol);
         if (explore(maze, start, visited, wall)) {
             System.out.println("Solved");
+            System.out.println("Path: ");
+            path.display();
         } else {
             System.out.println("No solution");
         }
@@ -133,6 +137,7 @@ class Robot {
         boolean[] posDirections = p.getPosDir();
 
         String feedback = maze.go(p.getStrDirection());
+        path.push(p.getStrDirection());
         System.out.println("Response:" + feedback);
         if (feedback.equals("win")) {
             return true;
@@ -466,6 +471,48 @@ class PointCollection {
         System.out.println("Visited: ");
         for (int i = 0; i < size; i++) {
             System.out.println(points[i]);
+        }
+    }
+}
+
+class ArrayList<T> {
+    T[] items;
+    int size;
+    static final int MAX_SIZE = 1000*1000;
+
+    public ArrayList() {
+        size = 0;
+        items = (T[]) new Object[MAX_SIZE];
+    }
+
+    public int size() {
+        return size;
+    }
+
+    public boolean isEmpty() {
+        return size == 0;
+    }
+
+    public boolean push(T item) {
+        if (size < MAX_SIZE) {
+            items[size] = item;
+            size++;
+            return true;
+        }
+        return false;
+    }
+
+    public T getItem(int i) {
+        if (i < size) {
+            return items[i];
+        }
+        System.out.println("Out of index!");
+        return null;
+    }
+
+    public void display() {
+        for (int i = 0; i < size; i++) {
+            System.out.printf(getItem(i) + " ");
         }
     }
 }
