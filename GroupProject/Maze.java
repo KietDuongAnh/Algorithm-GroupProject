@@ -14,7 +14,7 @@ public class Maze {
         rows = 4;
         cols = 5;
         map = new String[rows];
-        map[0] = ".X...";
+        map[0] = "..X..";
         map[1] = ".   .";
         map[2] = ".   .";
         map[3] = ".....";
