@@ -1,14 +1,12 @@
 package MazeSolverRecursive;
 
-import java.util.Arrays;
-
 public class Maze {
-    int rows;
-    int cols;
-    String[] map;
-    int robotRow;
-    int robotCol;
-    int steps;
+    private int rows;
+    private int cols;
+    private String[] map;
+    private int robotRow;
+    private int robotCol;
+    private int steps;
 
     public Maze() {
         // Note: in my real test, I will create much larger
@@ -55,7 +53,6 @@ public class Maze {
             return "win";
         } else if (map[currentRow].charAt(currentCol) == '.') {
             // Wall
-            System.out.println("Current: " + robotRow + ", " + robotCol);
             steps++;
             return "false";
         } else {
@@ -63,7 +60,6 @@ public class Maze {
             steps++;
             robotRow = currentRow;
             robotCol = currentCol;
-            System.out.println("Current: " + robotRow + ", " + robotCol);
             return "true";
         }
     }
@@ -83,18 +79,19 @@ class Robot {
         path = new ArrayList<String>();
     }
 
+    public void displayPath() {
+        path.display();
+    }
+
     public void navigate() {
         Maze maze = new Maze();
         Point start = new Point(0, 0);
-//        start.setPosDir(2, false);
         PointCollection visited = new PointCollection();
-//        visited.push(start);
         PointCollection wall = new PointCollection();
-        System.out.println("Current: " + maze.robotRow + ", " + maze.robotCol);
         if (explore(maze, start, visited, wall)) {
             System.out.println("Solved");
             System.out.println("Path: ");
-            path.display();
+            displayPath();
         } else {
             System.out.println("No solution");
         }
@@ -104,31 +101,8 @@ class Robot {
 
         if (p.isExplored(maze, visited, wall) || visited.isExisting(p.getX(), p.getY()) || wall.isExisting(p.getX(), p.getY())) {
             System.out.println("GO BACK");
-            // Not finished
-//            p.setStage("visited");
-//            visited.push(p);
-//            int currentDir = p.getIntDirection();
-//            Point prev = p.getPrev();
-//            if (prev == null) {
-//                return false;
-//            }
-//            boolean[] prevPosDir = prev.getPosDir();
-//            prev.setPosDir(currentDir, false);
-////            System.out.println(p.getDirectionTo(prev));
-//            maze.go(p.getDirectionTo(prev));
-//            for (int i = 0; i < prevPosDir.length; i++) {
-//                if (prevPosDir[i]) {
-//                    prev.setDirection(i);
-//                    break;
-//                }
-//            }
-//            System.out.println("Current " + p);
-//            System.out.println("Prev " + prev);
-//            return explore(maze, prev, visited, wall);
             return false;
         }
-
-//        System.out.println(p);
 
         int currentDir = p.getIntDirection();
         System.out.println(currentDir);
@@ -193,7 +167,6 @@ class Robot {
                 right.setPrev(p);
                 return explore(maze, right, visited, wall);
             }
-//            System.out.println("False:" + p);
             return explore(maze, p, visited, wall);
         }
 
@@ -218,8 +191,6 @@ class Robot {
                 if (currentDir == 3) {
                     up.setPosDir(1, false);
                 }
-//            System.out.println(p);
-//            System.out.println(up);
                 if (explore(maze, up, visited, wall)) {
                     return true;
                 }
@@ -410,24 +381,25 @@ class Point {
         return res;
     }
 
-    @Override
-    public String toString() {
-        if (this == null) {
-            return "null";
-        }
-        return "Point{" +
-                "x=" + x +
-                ", y=" + y +
-                ", currentDir=" + currentDir +
-                ", posDir=" + Arrays.toString(posDir) +
-                ", stage='" + stage + '\'' +
-                '}';
-    }
+    // Just for debugging
+//    @Override
+//    public String toString() {
+//        if (this == null) {
+//            return "null";
+//        }
+//        return "Point{" +
+//                "x=" + x +
+//                ", y=" + y +
+//                ", currentDir=" + currentDir +
+//                ", posDir=" + Arrays.toString(posDir) +
+//                ", stage='" + stage + '\'' +
+//                '}';
+//    }
 }
 
 class PointCollection {
-    Point[] points;
-    int size;
+    private Point[] points;
+    private int size;
 
     public PointCollection() {
         size = 0;
@@ -468,7 +440,6 @@ class PointCollection {
     }
 
     public void display() {
-        System.out.println("Visited: ");
         for (int i = 0; i < size; i++) {
             System.out.println(points[i]);
         }
@@ -476,9 +447,9 @@ class PointCollection {
 }
 
 class ArrayList<T> {
-    T[] items;
-    int size;
-    static final int MAX_SIZE = 1000*1000;
+    private T[] items;
+    private int size;
+    private static final int MAX_SIZE = 1000*1000;
 
     public ArrayList() {
         size = 0;
