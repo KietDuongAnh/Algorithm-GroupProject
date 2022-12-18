@@ -99,13 +99,15 @@ class Robot {
 
     boolean explore(Maze maze, Point p, PointCollection visited, PointCollection wall) {
 
+        // Check if it is possible to move forward or not
         if (p.isExplored(maze, visited, wall) || visited.isExisting(p.getX(), p.getY()) || wall.isExisting(p.getX(), p.getY())) {
             System.out.println("GO BACK");
             return false;
         }
 
+        // Get information of the current point
         int currentDir = p.getIntDirection();
-        System.out.println(currentDir);
+//        System.out.println(currentDir);
         int x = p.getX();
         int y = p.getY();
         boolean[] posDirections = p.getPosDir();
@@ -113,6 +115,8 @@ class Robot {
         String feedback = maze.go(p.getStrDirection());
         path.push(p.getStrDirection());
         System.out.println("Response:" + feedback);
+
+        // Dealing with the feedback after calling go()
         if (feedback.equals("win")) {
             return true;
         }
@@ -173,6 +177,11 @@ class Robot {
         if (feedback.equals("true")) {
             p.setStage("visited");
             visited.push(p);
+            // To save the number of steps when calling go() function, we will check the next positions first if they are visited or not.
+            // If the next position already existed ignore the direction and proceed to the next possible direction
+            // If it is not existed, create new coordinate for it and call the go() function in the next recursion
+
+            // Check the UP direction
             if (!visited.isExisting(x - 1, y) && !wall.isExisting(x - 1, y) && posDirections[0]) {
                 // Go up
                 Point up = new Point(x - 1, y);
@@ -195,6 +204,8 @@ class Robot {
                     return true;
                 }
             }
+
+            // Check the LEFT direction
             if (!visited.isExisting(x, y - 1) && !wall.isExisting(x, y - 1) && posDirections[1]) {
                 // Go left
                 Point left = new Point(x, y - 1);
@@ -217,6 +228,8 @@ class Robot {
                     return true;
                 }
             }
+
+            // Check the DOWN direction
             if (!visited.isExisting(x + 1, y) && !wall.isExisting(x + 1, y) && posDirections[2]) {
                 // Go down
                 Point down = new Point(x + 1, y);
@@ -239,6 +252,8 @@ class Robot {
                     return true;
                 }
             }
+
+            // Check the RIGHT direction
             if (!visited.isExisting(x, y + 1) && !wall.isExisting(x, y + 1) && posDirections[3]) {
                 // Go right
                 Point right = new Point(x, y + 1);
@@ -482,8 +497,13 @@ class ArrayList<T> {
     }
 
     public void display() {
-        for (int i = 0; i < size; i++) {
-            System.out.printf(getItem(i) + " ");
+        if (this.size() == 0) {
+            System.out.println("Empty array!");
+        }
+        else {
+            for (int i = 0; i < size; i++) {
+                System.out.printf(getItem(i) + " ");
+            }
         }
     }
 }
